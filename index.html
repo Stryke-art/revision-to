@@ -1,0 +1,403 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Révisions">
+<meta name="theme-color" content="#f5f5f7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-180.png">
+<title>Révisions Organisations</title>
+<style>
+:root{
+  --bg:#f5f5f7; --card:#fff; --text:#1c1c1e; --muted:#6e6e73; --line:#e3e3e8;
+  --accent:#2f5bea; --accent-soft:#e8edfd; --ok:#1f9d55; --ok-soft:#e3f6ea; --ko:#d33a3a; --ko-soft:#fde8e8;
+  --quote:#fff7e0; --quote-line:#e8b923;
+  --safe-b:env(safe-area-inset-bottom,0px); --safe-t:env(safe-area-inset-top,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root{--bg:#000;--card:#1c1c1e;--text:#f2f2f7;--muted:#98989f;--line:#2c2c2e;
+  --accent:#7d9bff;--accent-soft:#1c2540;--ok:#4cd08a;--ok-soft:#12301f;--ko:#ff6b6b;--ko-soft:#3a1717;
+  --quote:#2a2412;--quote-line:#c9a227}
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--text);
+  font:16px/1.5 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif}
+body{padding-top:var(--safe-t);padding-bottom:calc(72px + var(--safe-b))}
+main{max-width:640px;margin:0 auto;padding:16px}
+h1{font-size:28px;margin:8px 0 4px;letter-spacing:-.02em}
+h2{font-size:20px;margin:0 0 8px}
+h3{font-size:15px;margin:20px 0 6px;color:var(--accent);text-transform:uppercase;letter-spacing:.04em}
+p{margin:6px 0}
+.sub{color:var(--muted);margin:0 0 16px}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+.card{background:var(--card);border-radius:14px;padding:14px 16px;margin-bottom:10px;border:1px solid var(--line)}
+.row{display:flex;align-items:center;gap:12px}
+.chap{width:100%;text-align:left;display:flex;align-items:center;gap:12px}
+.num{flex:none;width:34px;height:34px;border-radius:50%;background:var(--accent-soft);color:var(--accent);
+  display:grid;place-items:center;font-weight:700}
+.chap .t{flex:1;font-weight:600}
+.chap .s{display:block;font-weight:400;font-size:13px;color:var(--muted)}
+.chev{color:var(--muted);font-size:20px}
+.done .num{background:var(--ok-soft);color:var(--ok)}
+.bar{height:6px;background:var(--line);border-radius:3px;overflow:hidden;margin:6px 0 16px}
+.bar>i{display:block;height:100%;background:var(--accent);transition:width .25s}
+ul{padding-left:20px;margin:6px 0}
+li{margin:4px 0}
+.quote{background:var(--quote);border-left:4px solid var(--quote-line);padding:10px 14px;border-radius:8px;margin:10px 0;font-style:italic}
+.def{background:var(--accent-soft);border-radius:10px;padding:10px 14px;margin:10px 0}
+.note{font-size:13px;color:var(--muted);margin-top:4px}
+.flow{display:flex;flex-direction:column;align-items:center;gap:4px;margin:10px 0;font-size:14px;text-align:center}
+.flow div{background:var(--accent-soft);border-radius:8px;padding:6px 12px}
+.flow b{color:var(--accent)}
+table{width:100%;border-collapse:collapse;font-size:14px;margin:8px 0}
+td,th{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+th{background:var(--accent-soft)}
+.back{color:var(--accent);padding:6px 0;font-weight:600}
+.btn{display:block;width:100%;padding:14px;border-radius:12px;background:var(--accent);color:#fff;font-weight:700;text-align:center;margin-top:12px}
+.btn.ghost{background:var(--card);color:var(--accent);border:1px solid var(--line)}
+.btn[disabled]{opacity:.4}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.chip{padding:8px 14px;border-radius:20px;background:var(--card);border:1px solid var(--line);font-size:14px}
+.chip.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.opt{display:block;width:100%;text-align:left;padding:14px;border-radius:12px;background:var(--card);
+  border:2px solid var(--line);margin:8px 0}
+.opt.ok{border-color:var(--ok);background:var(--ok-soft)}
+.opt.ko{border-color:var(--ko);background:var(--ko-soft)}
+.q{font-size:19px;font-weight:600;margin:12px 0}
+.expl{margin-top:12px;padding:12px 14px;border-radius:12px;background:var(--card);border:1px solid var(--line)}
+.score{font-size:56px;font-weight:800;text-align:center;margin:16px 0 0;letter-spacing:-.03em}
+.center{text-align:center}
+.pill{display:inline-block;font-size:12px;padding:2px 8px;border-radius:10px;background:var(--accent-soft);color:var(--accent);margin-bottom:4px}
+.wrong{border-left:4px solid var(--ko)}
+nav{position:fixed;left:0;right:0;bottom:0;display:flex;background:color-mix(in srgb,var(--card) 92%,transparent);
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-top:1px solid var(--line);
+  padding-bottom:var(--safe-b)}
+nav button{flex:1;padding:10px 0 8px;font-size:12px;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:2px}
+nav button svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+nav button.on{color:var(--accent)}
+.stat{display:flex;justify-content:space-between;font-size:14px;padding:4px 0}
+.mark{width:100%;margin-top:20px;padding:14px;border-radius:12px;font-weight:700;background:var(--card);border:1px solid var(--line);color:var(--accent)}
+.mark.on{background:var(--ok-soft);color:var(--ok);border-color:var(--ok)}
+</style>
+</head>
+<body>
+<main id="app"></main>
+<nav>
+  <button id="tab-rev"><svg viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 21V5"/><path d="M9 8h6"/></svg>Révision</button>
+  <button id="tab-quiz"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 .9-1 1.7"/><path d="M12 17h.01"/></svg>Test</button>
+</nav>
+
+<script>
+/* ============ CONTENU DU COURS ============ */
+const COURS = [
+{id:'orga', t:'Les organisations', s:'Définition, critères, March & Simon', body:`
+<h3>Objectifs du cours</h3>
+<ul>
+<li><b>Thème 1 :</b> se repérer dans les théories des organisations et avoir des repères sur le questionnement éthique. Projet fil rouge : analyser son entreprise avec au moins 2 courants théoriques vus en cours (50 % de la note). Oral de 20 minutes le 7/12/26.</li>
+<li><b>Thème 2 :</b> mieux appréhender les principaux éléments de la stratégie.</li>
+<li><b>Thème 3 :</b> gérer la performance individuellement et collectivement : identifier les forces et faiblesses d'une équipe dans ses compétences techniques.</li>
+</ul>
+<p><b>Pourquoi s'intéresser aux théories des organisations ?</b> Pour mieux comprendre les comportements individuels et collectifs au sein des organisations et comprendre leurs principes.</p>
+<h3>Organisation : quel sens ?</h3>
+<ul>
+<li><b>L'action d'organiser</b> : le processus qui engendre les groupements ou structures organisationnelles.</li>
+<li><b>Le résultat de cette action</b> : un regroupement d'humains qui coordonnent leurs activités pour atteindre certains buts.</li>
+</ul>
+<h3>Critères communs</h3>
+<ul>
+<li>Un ou plusieurs buts</li><li>Des membres</li><li>Une division des tâches</li><li>Une coordination des tâches</li>
+<li>Un système de contrôle, de communication, de contribution-rétribution</li><li>Une certaine stabilité</li>
+</ul>
+<h3>March et Simon (1958)</h3>
+<div class="quote">« Les organisations sont des systèmes d'actions coordonnées entre individus et groupes dont les préférences, l'information, les intérêts et les savoirs diffèrent. »</div>
+<p>Les théories des organisations décrivent la <b>conversion délicate du conflit en coopération</b>, la mobilisation des ressources et la coordination des efforts qui facilitent la survie simultanée d'une organisation et de ses membres.</p>`},
+
+{id:'taylor', t:'Taylor et Fayol', s:'Taylorisme, division du travail, fonctions', body:`
+<h3>F. W. Taylor (1856-1915)</h3>
+<div class="def"><b>« One best way »</b> : la recherche de la meilleure méthode, à partir de la détermination scientifique des temps et des modes opératoires et de leur prescription par l'encadrement.</div>
+<ul>
+<li><b>Recrutement</b> de l'individu le mieux à même d'accomplir la tâche.</li>
+<li><b>Formation, suivi et contrôle permanent</b> du personnel.</li>
+<li><b>Salaire proportionnel au rendement.</b></li>
+<li><b>Séparation rigoureuse</b> des tâches entre ceux qui conçoivent et ceux qui exécutent : <b>division verticale du travail</b>.</li>
+</ul>
+<p class="note">Question de l'enseignant : le taylorisme est-il encore d'actualité dans vos organisations ?</p>
+<h3>Les fonctions de l'entreprise (Fayol)</h3>
+<ul>
+<li>Technique</li><li>Commerciale</li><li>Sécurité</li><li>Financière</li><li>Administrative</li><li>Comptabilité</li>
+</ul>`},
+
+{id:'mayo', t:'École des relations humaines', s:'Elton Mayo, effet Hawthorne', body:`
+<h3>Elton Mayo (1880-1949)</h3>
+<p>Question de départ : <b>comment augmenter la productivité ?</b></p>
+<div class="flow">
+<div>Expérimentation</div><span>↓</span>
+<div>Groupe 1 : <b>avec</b> changement &nbsp;↔&nbsp; Groupe 2 : <b>sans</b> changement</div><span>↓</span>
+<div>Peu importe la manipulation, la productivité augmente</div><span>↓</span>
+<div><b>Pourquoi ?</b> → l'effet Hawthorne</div>
+</div>
+<h3>L'effet Hawthorne</h3>
+<div class="def">Les individus <b>modifient leur comportement simplement parce qu'ils ont conscience d'être observés ou étudiés</b>, et non à cause des changements expérimentaux eux-mêmes.</div>
+<p>Faire partie d'une expérience a des conséquences sur la <b>motivation</b> : le sentiment d'avoir été choisi, l'estime de soi.</p>
+<h3>À retenir (opposition avec Taylor)</h3>
+<table><tr><th>Taylor</th><th>Mayo</th></tr>
+<tr><td>Méthode, temps, contrôle, salaire au rendement</td><td>Relations humaines, reconnaissance, motivation</td></tr></table>`},
+
+{id:'herz', t:'Herzberg et soft skills', s:'Théorie des 2 facteurs', body:`
+<h3>Théorie des 2 facteurs (bifactorielle) d'Herzberg (1923-2000)</h3>
+<p>Développée dans les années 1950.</p>
+<table>
+<tr><th>Facteurs d'hygiène</th><th>Facteurs de motivation</th></tr>
+<tr><td><b>Préviennent l'insatisfaction</b></td><td><b>Créent la satisfaction</b></td></tr>
+<tr><td>Salaire, conditions de travail, relations avec les collègues (environnement de travail)</td><td>Responsabilités, reconnaissance, réussite</td></tr>
+</table>
+<ul>
+<li>Leur <b>absence ou insuffisance</b> peut créer de l'insatisfaction.</li>
+<li>Leur <b>seule présence ne garantit pas</b> la satisfaction.</li>
+<li>Pour accroître satisfaction et motivation : <b>améliorer les facteurs de motivation</b>.</li>
+</ul>
+<h3>Soft skills</h3>
+<div class="def">Capacités personnelles constitutives du <b>savoir-être</b> d'un collaborateur : agilité intellectuelle, résilience face à l'échec, bienveillance dans les relations.</div>
+<p>⇒ Les entreprises recherchent des <b>potentiels agiles</b> plutôt que des profils rigides.</p>`},
+
+{id:'drucker', t:'Peter Drucker et le MPO', s:'Management par objectifs', body:`
+<h3>Peter Drucker (1909-2005)</h3>
+<p>Ouvrage : <i>The Practice of Management</i> (1954).</p>
+<div class="def">Le <b>management</b> est la mise en œuvre des moyens humains et matériels d'une entreprise pour atteindre ses objectifs.</div>
+<ul>
+<li>Gestion et pilotage de l'entreprise (ex. point de vente) avec une <b>dimension humaine</b>.</li>
+<li>Une <b>dimension technique</b> : analytique et méthodes de contrôle de gestion pour optimiser les ressources.</li>
+</ul>
+<h3>Management par objectifs (MPO)</h3>
+<p>Définir des <b>objectifs opérationnels en collaboration avec les employés</b>, en concevant les modalités de réalisation, les délais et les ressources nécessaires pour les atteindre.</p>
+<h3>Autres points</h3>
+<ul>
+<li><b>Orientation client</b> : dans un point de vente, il est important de connaître les attentes et besoins des clients.</li>
+<li><b>Efficacité opérationnelle</b> : gestion efficace des stocks, des ressources et de l'approvisionnement.</li>
+</ul>`},
+
+{id:'lewin', t:'Styles de leadership', s:'Kurt Lewin', body:`
+<h3>Les 3 styles de leadership selon Kurt Lewin</h3>
+<table>
+<tr><th>Style</th><th>Caractéristiques</th></tr>
+<tr><td><b>Autocratique</b></td><td>Tend à centraliser, impose ses méthodes, prend seul ses décisions.</td></tr>
+<tr><td><b>Démocratique</b></td><td>Implique les individus dans le processus décisionnel, délègue et encourage. Peut être <b>consultatif</b> ou <b>participatif</b>.</td></tr>
+<tr><td><b>Non-interventionniste</b> (laissez-faire)</td><td>Laisse ses collaborateurs libres de prendre des décisions et de réaliser le travail.</td></tr>
+</table>`},
+
+{id:'ethique', t:'L\'éthique', s:'Enjeux, Jonas, facteurs, démarche du manager', body:`
+<h3>Le questionnement éthique</h3>
+<ul>
+<li>Il relève essentiellement d'une <b>réflexion individuelle</b>.</li>
+<li>Pour le monde des affaires : y a-t-il d'autres lois que celle du profit ?</li>
+<li>De plus en plus d'universitaires et de professionnels s'intéressent à la réflexion éthique appliquée à l'entreprise.</li>
+</ul>
+<h3>Pourquoi aujourd'hui ? Les enjeux actuels</h3>
+<ul>
+<li>L'indispensable <b>transition écologique</b></li>
+<li>La <b>numérisation</b> de la société et du travail</li>
+<li>Les interrogations sur le <b>partage de la valeur</b> dans une économie mondialisée</li>
+</ul>
+<div class="quote">La recherche des conditions « de la vie bonne, aujourd'hui et demain, dans des institutions justes et au service du bien social et écologique » (Cécile Renouard, 2015)</div>
+<p>En entreprise, cela se matérialise par un <b>arbitrage entre les demandes des diverses parties prenantes</b> de l'organisation.</p>
+<h3>Hans Jonas : éthique de la responsabilité</h3>
+<div class="quote">« Agis de façon que les effets de ton action soient compatibles avec la permanence d'une vie authentiquement humaine sur terre, et de façon que les effets de ton action ne soient pas destructeurs pour la possibilité future d'une telle vie. »</div>
+<p class="note">Notes : Jonas (1990). Le Principe responsabilité date de 1979 dans l'original, 1990 est probablement l'édition française.</p>
+<h3>Contribuer à un environnement de travail éthique</h3>
+<div class="quote">« L'exemplarité n'est pas une façon d'influencer les autres, mais la seule. » (Albert Schweitzer)</div>
+<h3>6 facteurs contribuant aux comportements non éthiques</h3>
+<ol>
+<li>Comportement des supérieurs</li>
+<li>Comportement des collègues dans l'organisation</li>
+<li>Pratiques non éthiques en vigueur dans l'industrie ou la profession</li>
+<li>Climat moral de la société</li>
+<li>Politique formelle de l'organisation</li>
+<li>Besoin financier personnel</li>
+</ol>
+<p>⇒ Ces facteurs constituent l'environnement de l'individu et sont <b>intriqués</b>.</p>
+<h3>Sur quoi repose une démarche éthique pour un manager ?</h3>
+<ul>
+<li>La <b>faculté de discernement et de recul critique</b>, et pas uniquement l'observance ou la conformité aux règles édictées.</li>
+<li>Proposer un <b>accompagnement</b> permettant à chaque collaborateur de se sentir considéré, écouté et impliqué (le « vivre ensemble » en entreprise).</li>
+<li>Cela passe par une meilleure compréhension de soi et de ses émotions, des apports psychologiques et sociologiques du comportement des individus et de la meilleure façon de les accompagner (<b>soft skills</b>).</li>
+</ul>`}
+];
+
+/* ============ QUESTIONS (la 1re option est la bonne, mélangée à l'affichage) ============ */
+const QS = [
+// orga
+{c:'orga',q:'Quel est le résultat de l\'action d\'organiser ?',o:['Un regroupement d\'humains qui coordonnent leurs activités pour atteindre certains buts','Un ensemble de machines automatisées','Un plan comptable','Un contrat de travail'],e:'L\'action d\'organiser est le processus ; son résultat est le regroupement d\'humains coordonnés vers des buts.'},
+{c:'orga',q:'Lequel n\'est PAS un critère commun des organisations ?',o:['L\'absence de toute hiérarchie','Un ou plusieurs buts','Une division des tâches','Une certaine stabilité'],e:'Les critères : buts, membres, division et coordination des tâches, système de contrôle/communication/contribution-rétribution, stabilité.'},
+{c:'orga',q:'Selon March et Simon (1958), une organisation est :',o:['Un système d\'actions coordonnées entre individus et groupes aux préférences, intérêts et savoirs différents','Un groupe d\'individus partageant tous les mêmes intérêts','Une structure fondée sur un seul chef','Une machine à produire'],e:'March et Simon insistent sur la diversité des préférences, de l\'information, des intérêts et des savoirs.'},
+{c:'orga',q:'Que décrivent les théories des organisations selon le cours ?',o:['La conversion délicate du conflit en coopération','La suppression de tout conflit','Le calcul des salaires','La fiscalité des entreprises'],e:'Elles décrivent la conversion du conflit en coopération, la mobilisation des ressources et la coordination des efforts.'},
+{c:'orga',q:'Quelle est la part de l\'oral de 20 minutes dans la note du projet fil rouge ?',o:['50 %','20 %','100 %','10 %'],e:'Analyse de l\'entreprise avec au moins 2 courants théoriques, 50 %, présentation le 7/12/26.'},
+{c:'orga',q:'Combien de courants théoriques minimum faut-il mobiliser dans le projet fil rouge ?',o:['2','1','3','5'],e:'Au moins 2 courants théoriques parmi ceux vus en cours.'},
+// taylor
+{c:'taylor',q:'Que signifie « one best way » chez Taylor ?',o:['La recherche de la meilleure méthode, déterminée scientifiquement','Laisser chacun choisir sa méthode','Copier les concurrents','Maximiser la satisfaction des salariés'],e:'Détermination scientifique des temps et modes opératoires, prescrits par l\'encadrement.'},
+{c:'taylor',q:'Quel système de rémunération Taylor préconise-t-il ?',o:['Un salaire proportionnel au rendement','Un salaire fixe identique pour tous','Un salaire à l\'ancienneté','Aucun salaire, uniquement des primes collectives'],e:'Taylor met en place un salaire proportionnel au rendement.'},
+{c:'taylor',q:'Qu\'est-ce que la division verticale du travail ?',o:['La séparation entre ceux qui conçoivent et ceux qui exécutent','La répartition des tâches entre services identiques','Le partage du travail entre équipes de nuit et de jour','La rotation des postes'],e:'Séparation rigoureuse des tâches entre concepteurs et exécutants.'},
+{c:'taylor',q:'Quelles sont les dates de F. W. Taylor ?',o:['1856-1915','1880-1949','1909-2005','1923-2000'],e:'Taylor : 1856-1915. Mayo : 1880-1949. Drucker : 1909-2005. Herzberg : 1923-2000.'},
+{c:'taylor',q:'Laquelle de ces fonctions fait partie de la liste des fonctions de l\'entreprise (Fayol) ?',o:['Sécurité','Marketing digital','Ressources humaines','Recherche et développement'],e:'Technique, commerciale, sécurité, financière, administrative, comptabilité.'},
+{c:'taylor',q:'Selon Taylor, que fait l\'encadrement ?',o:['Il prescrit les temps et modes opératoires et contrôle en permanence','Il laisse les ouvriers choisir leur méthode','Il se limite à recruter','Il ne contrôle que les résultats financiers'],e:'Formation, suivi et contrôle permanent du personnel par l\'encadrement.'},
+// mayo
+{c:'mayo',q:'Qui est le fondateur de l\'école des relations humaines évoquée dans le cours ?',o:['Elton Mayo','Frederick Taylor','Peter Drucker','Kurt Lewin'],e:'Elton Mayo (1880-1949).'},
+{c:'mayo',q:'Dans l\'expérience de Mayo, que constate-t-on ?',o:['Peu importe la manipulation, la productivité augmente','La productivité augmente uniquement avec le changement','La productivité baisse dans les deux groupes','Seul le groupe sans changement progresse'],e:'La productivité augmentait dans les deux groupes, d\'où la question « pourquoi ? » et l\'effet Hawthorne.'},
+{c:'mayo',q:'Qu\'est-ce que l\'effet Hawthorne ?',o:['Les individus modifient leur comportement parce qu\'ils se savent observés','Les ouvriers produisent plus grâce à un meilleur salaire','Les machines augmentent la productivité','Les groupes rivalisent entre eux'],e:'Le changement de comportement vient de la conscience d\'être observé ou étudié, pas des changements expérimentaux.'},
+{c:'mayo',q:'Quelle conséquence a le fait de participer à une expérience sur la motivation ?',o:['Le sentiment d\'avoir été choisi et l\'estime de soi augmentent','Le stress devient le seul moteur','La motivation diminue','Aucune conséquence'],e:'Faire partie d\'une expérience : sentiment d\'avoir été choisi, estime de soi.'},
+{c:'mayo',q:'Combien de groupes y avait-il dans l\'expérimentation schématisée dans le cours ?',o:['2 (avec et sans changement)','1','3','4'],e:'Groupe 1 avec changement, groupe 2 sans changement.'},
+// herz
+{c:'herz',q:'Les facteurs d\'hygiène, selon Herzberg, servent à :',o:['Prévenir l\'insatisfaction','Créer la satisfaction','Augmenter la productivité de façon durable','Remplacer les facteurs de motivation'],e:'Hygiène = prévenir l\'insatisfaction ; motivation = satisfaction.'},
+{c:'herz',q:'Lequel est un facteur de motivation ?',o:['La reconnaissance','Le salaire','Les conditions de travail','Les relations avec les collègues'],e:'Salaire, conditions de travail, relations = hygiène. Responsabilités, reconnaissance, réussite = motivation.'},
+{c:'herz',q:'Que se passe-t-il si les facteurs d\'hygiène sont présents ?',o:['Ils ne garantissent pas à eux seuls la satisfaction','Ils garantissent la satisfaction','Ils garantissent la motivation','Ils suppriment la nécessité de motiver'],e:'Leur absence crée de l\'insatisfaction, mais leur seule présence ne garantit pas la satisfaction.'},
+{c:'herz',q:'Pour accroître satisfaction et motivation, il faut :',o:['Améliorer les facteurs de motivation','Se contenter d\'augmenter les salaires','Supprimer les contrôles','Améliorer uniquement les conditions de travail'],e:'Il ne faut pas se contenter des facteurs d\'hygiène.'},
+{c:'herz',q:'Herzberg a développé sa théorie dans les années :',o:['1950','1900','1980','2000'],e:'Théorie des 2 facteurs développée dans les années 1950.'},
+{c:'herz',q:'Que désignent les soft skills ?',o:['Les capacités personnelles constitutives du savoir-être d\'un collaborateur','Les compétences techniques du poste','Les diplômes obtenus','Les logiciels utilisés'],e:'Ex. : agilité intellectuelle, résilience face à l\'échec, bienveillance dans les relations.'},
+{c:'herz',q:'Que recherchent les entreprises selon le cours, à propos des soft skills ?',o:['Des potentiels agiles plutôt que des profils rigides','Des profils strictement techniques','Des candidats sans expérience','Des profils uniquement diplômés'],e:'Les entreprises recherchent des potentiels agiles.'},
+// drucker
+{c:'drucker',q:'Quel est l\'ouvrage de Peter Drucker cité dans le cours ?',o:['The Practice of Management','Le Principe responsabilité','Les principes du management scientifique','L\'entreprise et son environnement'],e:'The Practice of Management (1954).'},
+{c:'drucker',q:'Que signifie MPO ?',o:['Management par objectifs','Méthode de planification opérationnelle','Mesure de la performance organisationnelle','Mode de production optimisé'],e:'Définir des objectifs opérationnels en collaboration avec les employés.'},
+{c:'drucker',q:'Dans le MPO, les objectifs sont définis :',o:['En collaboration avec les employés','Uniquement par la direction','Uniquement par les clients','Par un organisme externe'],e:'Avec modalités de réalisation, délais et ressources nécessaires.'},
+{c:'drucker',q:'Que comprend la dimension technique du management chez Drucker ?',o:['Analytique et méthodes de contrôle de gestion pour optimiser les ressources','Les relations sociales','La culture d\'entreprise','La responsabilité sociale'],e:'La dimension humaine s\'y ajoute : le management a deux dimensions.'},
+{c:'drucker',q:'Pourquoi l\'orientation client est-elle importante dans un point de vente ?',o:['Pour connaître les attentes et besoins des clients','Pour réduire les stocks','Pour contrôler les employés','Pour fixer les salaires'],e:'C\'est un point mis en avant par Drucker.'},
+{c:'drucker',q:'L\'efficacité opérationnelle concerne notamment :',o:['La gestion des stocks, des ressources et de l\'approvisionnement','La publicité','Le recrutement','La gouvernance'],e:'Gestion efficace des stocks, ressources et approvisionnement.'},
+// lewin
+{c:'lewin',q:'Quels sont les 3 styles de leadership de Kurt Lewin ?',o:['Autocratique, démocratique, non-interventionniste','Directif, persuasif, délégatif','Charismatique, transactionnel, transformationnel','Formel, informel, hybride'],e:'Autocratique, démocratique, non-interventionniste (laissez-faire).'},
+{c:'lewin',q:'Quel leader prend seul ses décisions et impose ses méthodes ?',o:['Le leader autocratique','Le leader démocratique','Le leader non-interventionniste','Le leader participatif'],e:'Il tend à centraliser.'},
+{c:'lewin',q:'Le leader démocratique peut être :',o:['Consultatif ou participatif','Autoritaire ou permissif','Centralisé ou absent','Formel ou informel'],e:'Il implique les individus, délègue et encourage.'},
+{c:'lewin',q:'Quel leader laisse ses collaborateurs libres de décider et de réaliser le travail ?',o:['Le leader non-interventionniste','Le leader autocratique','Le leader démocratique','Le leader consultatif'],e:'Aussi appelé laissez-faire.'},
+// ethique
+{c:'ethique',q:'Selon le cours, le questionnement éthique relève essentiellement :',o:['D\'une réflexion individuelle','D\'une obligation légale','D\'une décision du comité de direction','De la comptabilité'],e:'D\'où l\'importance du discernement personnel du manager.'},
+{c:'ethique',q:'Lequel n\'est PAS cité comme enjeu actuel justifiant le questionnement éthique ?',o:['La réduction du temps de travail','La transition écologique','La numérisation de la société et du travail','Le partage de la valeur dans une économie mondialisée'],e:'Les 3 enjeux : transition écologique, numérisation, partage de la valeur.'},
+{c:'ethique',q:'Selon Cécile Renouard (2015), l\'éthique en entreprise se matérialise par :',o:['Un arbitrage entre les demandes des diverses parties prenantes','La maximisation du profit','Le respect du seul règlement intérieur','La suppression des conflits'],e:'La recherche de la « vie bonne » dans des institutions justes, au service du bien social et écologique.'},
+{c:'ethique',q:'Quel philosophe a formulé l\'éthique de la responsabilité (impératif sur la permanence d\'une vie authentiquement humaine) ?',o:['Hans Jonas','Albert Schweitzer','Kurt Lewin','Peter Drucker'],e:'Hans Jonas (1990 dans les notes). Schweitzer est cité pour l\'exemplarité.'},
+{c:'ethique',q:'Qui a dit « L\'exemplarité n\'est pas une façon d\'influencer les autres, mais la seule » ?',o:['Albert Schweitzer','Hans Jonas','Cécile Renouard','Elton Mayo'],e:'Citation d\'Albert Schweitzer.'},
+{c:'ethique',q:'Lequel n\'est PAS un facteur contribuant aux comportements non éthiques ?',o:['Le niveau de diplôme de l\'individu','Le comportement des supérieurs','Le climat moral de la société','Le besoin financier personnel'],e:'Les 6 : supérieurs, collègues, pratiques de l\'industrie, climat moral, politique formelle, besoin financier personnel.'},
+{c:'ethique',q:'Combien de facteurs contribuant aux comportements non éthiques sont listés ?',o:['6','3','4','8'],e:'Ils constituent l\'environnement de l\'individu et sont intriqués.'},
+{c:'ethique',q:'Sur quoi repose une démarche éthique pour un manager ?',o:['Le discernement et le recul critique, pas seulement la conformité aux règles','L\'application stricte du règlement','L\'obéissance aux supérieurs','Le seul respect de la loi'],e:'Et sur un accompagnement qui fait que chacun se sent considéré, écouté et impliqué.'},
+{c:'ethique',q:'Que mobilise le manager pour accompagner ses collaborateurs de façon éthique ?',o:['Ses soft skills et sa compréhension de soi et des émotions','Uniquement ses compétences techniques','Des sanctions','Des indicateurs financiers'],e:'Compréhension de soi, émotions, apports psychologiques et sociologiques.'}
+];
+
+/* ============ ÉTAT ============ */
+const $=s=>document.querySelector(s);
+const app=$('#app');
+const store={
+  get(k,d){try{const v=localStorage.getItem('rev_'+k);return v?JSON.parse(v):d}catch(e){return d}},
+  set(k,v){try{localStorage.setItem('rev_'+k,JSON.stringify(v))}catch(e){}}
+};
+let known=store.get('known',{});      // chapitres marqués "su"
+let best=store.get('best',{});        // meilleur score par chapitre (en %)
+let tab=store.get('tab','rev');
+let view={name:'list'};               // vue courante
+let quiz=null;
+
+const shuffle=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const esc=s=>s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+
+/* ============ RÉVISION ============ */
+function renderRev(){
+  if(view.name==='chap'){
+    const c=COURS.find(x=>x.id===view.id);
+    app.innerHTML=`<button class="back" id="b">‹ Cours</button><h1>${c.t}</h1><p class="sub">${c.s}</p>${c.body}
+      <button class="mark ${known[c.id]?'on':''}" id="mk">${known[c.id]?'✓ Chapitre su':'Marquer comme su'}</button>
+      <button class="btn" id="tq">Tester ce chapitre</button>`;
+    $('#b').onclick=()=>{view={name:'list'};render()};
+    $('#mk').onclick=()=>{known[c.id]=!known[c.id];store.set('known',known);renderRev()};
+    $('#tq').onclick=()=>{setTab('quiz');startQuiz([c.id],0)};
+    window.scrollTo(0,0);return;
+  }
+  const n=COURS.filter(c=>known[c.id]).length;
+  app.innerHTML=`<h1>Révision</h1><p class="sub">Théories des organisations et éthique</p>
+    <div class="bar"><i style="width:${n/COURS.length*100}%"></i></div>
+    <p class="note" style="margin-top:-10px;margin-bottom:12px">${n} / ${COURS.length} chapitres sus</p>
+    ${COURS.map((c,i)=>`<div class="card ${known[c.id]?'done':''}"><button class="chap" data-id="${c.id}">
+      <span class="num">${known[c.id]?'✓':i+1}</span><span class="t">${c.t}<span class="s">${c.s}</span></span><span class="chev">›</span></button></div>`).join('')}`;
+  app.querySelectorAll('.chap').forEach(b=>b.onclick=()=>{view={name:'chap',id:b.dataset.id};renderRev()});
+}
+
+/* ============ QUIZ ============ */
+let sel={chaps:new Set(),n:10};
+function renderQuizHome(){
+  const all=sel.chaps.size===0;
+  const pool=QS.filter(q=>all||sel.chaps.has(q.c)).length;
+  app.innerHTML=`<h1>Test</h1><p class="sub">${QS.length} questions, ${COURS.length} chapitres</p>
+    <h3>Chapitres</h3>
+    <div class="chips"><button class="chip ${all?'on':''}" data-c="*">Tout le cours</button>
+    ${COURS.map(c=>`<button class="chip ${sel.chaps.has(c.id)?'on':''}" data-c="${c.id}">${c.t}</button>`).join('')}</div>
+    <h3>Nombre de questions</h3>
+    <div class="chips">${[10,20,0].map(n=>`<button class="chip ${sel.n===n?'on':''}" data-n="${n}">${n||'Toutes'}</button>`).join('')}</div>
+    <button class="btn" id="go">Commencer (${sel.n?Math.min(sel.n,pool):pool} questions)</button>
+    <h3>Meilleurs scores</h3>
+    <div class="card">${[['all','Tout le cours'],...COURS.map(c=>[c.id,c.t])].map(([k,l])=>
+      `<div class="stat"><span>${l}</span><b>${best[k]!=null?best[k]+' %':'-'}</b></div>`).join('')}</div>`;
+  app.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>{
+    const c=b.dataset.c; if(c==='*')sel.chaps.clear(); else sel.chaps.has(c)?sel.chaps.delete(c):sel.chaps.add(c);
+    renderQuizHome()});
+  app.querySelectorAll('[data-n]').forEach(b=>b.onclick=()=>{sel.n=+b.dataset.n;renderQuizHome()});
+  $('#go').onclick=()=>startQuiz([...sel.chaps],sel.n);
+}
+function startQuiz(chaps,n,custom){
+  let pool=custom||QS.filter(q=>!chaps.length||chaps.includes(q.c));
+  pool=shuffle(pool); if(n)pool=pool.slice(0,n);
+  quiz={chaps,items:pool.map(q=>{const opts=shuffle(q.o.map((t,i)=>({t,ok:i===0})));return{...q,opts}}),i:0,score:0,wrong:[],answered:false};
+  renderQuiz();
+}
+function renderQuiz(){
+  if(!quiz){renderQuizHome();return}
+  if(quiz.i>=quiz.items.length){renderResult();return}
+  const q=quiz.items[quiz.i], c=COURS.find(x=>x.id===q.c);
+  app.innerHTML=`<div class="row" style="justify-content:space-between"><button class="back" id="x">‹ Quitter</button><span class="note">${quiz.i+1} / ${quiz.items.length}</span></div>
+    <div class="bar"><i style="width:${quiz.i/quiz.items.length*100}%"></i></div>
+    <span class="pill">${c.t}</span><div class="q">${esc(q.q)}</div>
+    ${q.opts.map((o,i)=>`<button class="opt" data-i="${i}">${esc(o.t)}</button>`).join('')}
+    <div id="fb"></div>`;
+  $('#x').onclick=()=>{quiz=null;renderQuizHome()};
+  app.querySelectorAll('.opt').forEach(b=>b.onclick=()=>answer(+b.dataset.i));
+  quiz.answered=false; window.scrollTo(0,0);
+}
+function answer(i){
+  if(quiz.answered)return; quiz.answered=true;
+  const q=quiz.items[quiz.i], good=q.opts[i].ok;
+  if(good)quiz.score++; else quiz.wrong.push(q);
+  app.querySelectorAll('.opt').forEach((b,k)=>{b.disabled=true;if(q.opts[k].ok)b.classList.add('ok');else if(k===i)b.classList.add('ko')});
+  const last=quiz.i===quiz.items.length-1;
+  $('#fb').innerHTML=`<div class="expl"><b>${good?'Bonne réponse':'Mauvaise réponse'}</b><p>${esc(q.e)}</p></div>
+    <button class="btn" id="nx">${last?'Voir le résultat':'Question suivante'}</button>`;
+  $('#nx').onclick=()=>{quiz.i++;renderQuiz()};
+  $('#nx').scrollIntoView({block:'nearest',behavior:'smooth'});
+}
+function renderResult(){
+  const n=quiz.items.length, pct=Math.round(quiz.score/n*100);
+  const key=quiz.chaps.length===1?quiz.chaps[0]:(quiz.chaps.length===0?'all':null);
+  if(key&&(best[key]==null||pct>best[key])){best[key]=pct;store.set('best',best)}
+  const msg=pct>=90?'Excellent':pct>=70?'Bien':pct>=50?'Moyen, à retravailler':'À revoir';
+  app.innerHTML=`<h1 class="center">${msg}</h1><div class="score">${quiz.score} / ${n}</div><p class="sub center">${pct} %</p>
+    ${quiz.wrong.length?`<h3>À revoir (${quiz.wrong.length})</h3>${quiz.wrong.map(q=>`<div class="card wrong"><b>${esc(q.q)}</b><p>Réponse : ${esc(q.opts.find(o=>o.ok).t)}</p><p class="note">${esc(q.e)}</p></div>`).join('')}
+    <button class="btn" id="rw">Refaire les questions ratées</button>`:'<p class="center">Aucune erreur.</p>'}
+    <button class="btn ghost" id="again">Nouveau test</button>`;
+  if(quiz.wrong.length)$('#rw').onclick=()=>startQuiz([],0,quiz.wrong.map(q=>({c:q.c,q:q.q,o:q.opts.slice().sort((a,b)=>b.ok-a.ok).map(o=>o.t),e:q.e})));
+  $('#again').onclick=()=>{quiz=null;renderQuizHome()};
+  window.scrollTo(0,0);
+}
+
+/* ============ NAV ============ */
+function setTab(t){tab=t;store.set('tab',t);render()}
+function render(){
+  $('#tab-rev').classList.toggle('on',tab==='rev');
+  $('#tab-quiz').classList.toggle('on',tab==='quiz');
+  tab==='rev'?renderRev():renderQuiz();
+}
+$('#tab-rev').onclick=()=>{if(tab==='rev')view={name:'list'};setTab('rev')};
+$('#tab-quiz').onclick=()=>{if(tab==='quiz'&&quiz&&quiz.i>=quiz.items.length)quiz=null;setTab('quiz')};
+render();
+
+if('serviceWorker' in navigator && location.protocol.startsWith('http')){
+  navigator.serviceWorker.register('sw.js').catch(()=>{});
+}
+</script>
+</body>
+</html>
